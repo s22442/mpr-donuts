@@ -84,7 +84,11 @@ public class DonutPack {
     this.donuts = donuts;
   }
 
-  public boolean isOverloaded() {
-    return this.donuts.size() > this.donutCapacity;
+  public int getDonutCount() {
+    return this.donuts.size();
+  }
+
+  public void addDonut(Donut donut) {
+    this.donuts.add(donut);
   }
 }

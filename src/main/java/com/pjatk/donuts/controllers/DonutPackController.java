@@ -1,7 +1,10 @@
 package com.pjatk.donuts.controllers;
 
 import com.pjatk.donuts.entities.DonutPack;
+import com.pjatk.donuts.enums.DonutPackShape;
 import com.pjatk.donuts.services.DonutPackService;
+import com.sun.net.httpserver.Authenticator;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +30,17 @@ public class DonutPackController {
     return ResponseEntity.ok(this.donutPackService.getExampleWithName(name));
   }
 
+  @GetMapping("/new")
+  public ResponseEntity<DonutPack> getNew(
+      @RequestParam String name,
+      @RequestParam DonutPackShape shape,
+      @RequestParam String color,
+      @RequestParam int donutCapacity) {
+    // example url:
+    // /donut-pack/new?name=example&shape=SQUARE&color=blue&donutCapacity=10
+    return ResponseEntity.ok(this.donutPackService.getNew(name, shape, color, donutCapacity));
+  }
+
   @GetMapping("/get/{id}")
   public ResponseEntity<Optional<DonutPack>> getById(@PathVariable("id") Integer id) {
     return ResponseEntity.ok(this.donutPackService.getById(id));
@@ -35,5 +49,17 @@ public class DonutPackController {
   @GetMapping("/all")
   public ResponseEntity<List<DonutPack>> getAll() {
     return ResponseEntity.ok(this.donutPackService.getAll());
+  }
+
+  @GetMapping("/edit/{donutPackId}/add/{donutId}")
+  public ResponseEntity<Authenticator> addDonutToDonutPack(
+      @PathVariable("donutPackId") Integer donutPackId, @PathVariable("donutId") Integer donutId) {
+
+    try {
+      this.donutPackService.addDonutToDonutPack(donutPackId, donutId);
+      return ResponseEntity.ok().build();
+    } catch (IllegalStateException e) {
+      return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
   }
 }
